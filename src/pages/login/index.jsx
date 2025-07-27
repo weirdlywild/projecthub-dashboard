@@ -13,7 +13,7 @@ const LoginPage = () => {
   useEffect(() => {
     // Redirect authenticated users to dashboard
     if (!loading && user) {
-      router.push('/dashboard-overview');
+      router.push('/');
     }
   }, [user, loading, router]);
 

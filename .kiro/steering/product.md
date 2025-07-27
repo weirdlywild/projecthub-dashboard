@@ -31,7 +31,6 @@ Development teams and project managers who need:
 
 - `/` - Dashboard Overview (home page)
 - `/login` - User authentication
-- `/dashboard-overview` - Main dashboard with project metrics
 - `/analytics-reports` - Data visualization and reporting
 - `/search-discovery` - Project and resource search
 - `/integrations-hub` - Third-party integrations management

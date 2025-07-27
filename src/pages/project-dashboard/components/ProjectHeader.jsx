@@ -63,7 +63,7 @@ const ProjectHeader = ({ currentProject, onProjectChange, onCreateTask, onFilter
   };
 
   const breadcrumbs = [
-    { label: 'Dashboard', path: '/dashboard-overview', isClickable: true },
+    { label: 'Dashboard', path: '/', isClickable: true },
     { label: 'Projects', path: '/project-dashboard', isClickable: false }
   ];
 

@@ -26,7 +26,7 @@ const AuthMiddleware = ({ children }: AuthMiddlewareProps) => {
 
       // If user is authenticated and trying to access login page
       if (user && currentPath === '/login') {
-        router.push('/dashboard-overview');
+        router.push('/');
         return;
       }
     };

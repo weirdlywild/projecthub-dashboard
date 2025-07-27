@@ -6,7 +6,7 @@ const LoginHeader = () => {
   const router = useRouter();
 
   const handleLogoClick = () => {
-    router.push('/dashboard-overview');
+    router.push('/');
   };
 
   return (

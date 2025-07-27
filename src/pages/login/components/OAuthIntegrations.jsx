@@ -53,7 +53,7 @@ const OAuthIntegrations = () => {
       localStorage.setItem('userEmail', `user@${serviceId}.com`);
       
       // Redirect to dashboard with integration pre-configured
-      router.push('/dashboard-overview');
+      router.push('/');
       
       setLoadingStates(prev => ({ ...prev, [serviceId]: false }));
     }, 2000);

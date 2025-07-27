@@ -26,7 +26,7 @@ export const useAuthNavigation = () => {
   };
 
   const goToDashboard = () => {
-    router.push('/dashboard-overview');
+    router.push('/');
   };
 
   return {
@@ -41,7 +41,6 @@ export const useAuthNavigation = () => {
 // Protected route paths
 export const PROTECTED_ROUTES = [
   '/',
-  '/dashboard-overview',
   '/analytics-reports',
   '/search-discovery',
   '/integrations-hub',

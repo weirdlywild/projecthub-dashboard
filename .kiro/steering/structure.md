@@ -19,9 +19,8 @@ Next.js file-based routing - each file becomes a route:
 pages/
 ├── _app.tsx              # App wrapper with providers (Redux, Auth)
 ├── _document.tsx         # HTML document structure
-├── index.tsx             # Home page (routes to dashboard-overview)
+├── index.tsx             # Home page (dashboard overview)
 ├── login.tsx             # Authentication page
-├── dashboard-overview.tsx # Main dashboard
 ├── analytics-reports.tsx  # Data visualization
 ├── search-discovery.tsx   # Search functionality
 ├── integrations-hub.tsx   # Third-party integrations
