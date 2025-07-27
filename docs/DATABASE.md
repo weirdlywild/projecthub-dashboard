@@ -267,16 +267,15 @@ All tables have RLS enabled with policies ensuring:
 - Project owners have additional management permissions
 - Public templates and reports are accessible to all users
 
-## Sample Data
+## Clean Schema
 
-Both migrations include comprehensive sample data:
-- 4 sample users (admin, manager, 2 members)
-- 3 sample projects with different statuses
-- Multiple tasks with various priorities and statuses
-- Project activities and timeline entries
-- Integration connections
-- Analytics metrics and notifications
-- Time tracking entries
+The migrations contain only schema definitions without sample data:
+- Database tables and relationships
+- Custom types and enums
+- Indexes for performance optimization
+- Row Level Security (RLS) policies
+- Helper functions and triggers
+- Views for analytics and reporting
 
 ## Usage Examples
 

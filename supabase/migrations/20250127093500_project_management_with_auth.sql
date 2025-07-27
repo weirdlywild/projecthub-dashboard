@@ -167,6 +167,9 @@ FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "users_update_own_profile" ON public.user_profiles
 FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
 
+CREATE POLICY "users_insert_own_profile" ON public.user_profiles
+FOR INSERT WITH CHECK (auth.uid() = id);
+
 -- Projects
 CREATE POLICY "users_view_accessible_projects" ON public.projects
 FOR SELECT USING (public.can_access_project(id));
@@ -243,93 +246,3 @@ CREATE TRIGGER update_projects_updated_at
 CREATE TRIGGER update_tasks_updated_at
   BEFORE UPDATE ON public.tasks
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
-
--- 14. Mock Data
-DO $$
-DECLARE
-    admin_uuid UUID := gen_random_uuid();
-    manager_uuid UUID := gen_random_uuid();
-    member1_uuid UUID := gen_random_uuid();
-    member2_uuid UUID := gen_random_uuid();
-    project1_uuid UUID := gen_random_uuid();
-    project2_uuid UUID := gen_random_uuid();
-    project3_uuid UUID := gen_random_uuid();
-BEGIN
-    -- Create auth users with required fields
-    INSERT INTO auth.users (
-        id, instance_id, aud, role, email, encrypted_password, email_confirmed_at,
-        created_at, updated_at, raw_user_meta_data, raw_app_meta_data,
-        is_sso_user, is_anonymous, confirmation_token, confirmation_sent_at,
-        recovery_token, recovery_sent_at, email_change_token_new, email_change,
-        email_change_sent_at, email_change_token_current, email_change_confirm_status,
-        reauthentication_token, reauthentication_sent_at, phone, phone_change,
-        phone_change_token, phone_change_sent_at
-    ) VALUES
-        (admin_uuid, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-         'admin@projecthub.com', crypt('ProjectHub2025!', gen_salt('bf', 10)), now(), now(), now(),
-         '{"full_name": "Admin User", "role": "admin"}'::jsonb, '{"provider": "email", "providers": ["email"]}'::jsonb,
-         false, false, '', null, '', null, '', '', null, '', 0, '', null, null, '', '', null),
-        (manager_uuid, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-         'manager@projecthub.com', crypt('ProjectHub2025!', gen_salt('bf', 10)), now(), now(), now(),
-         '{"full_name": "Project Manager", "role": "manager"}'::jsonb, '{"provider": "email", "providers": ["email"]}'::jsonb,
-         false, false, '', null, '', null, '', '', null, '', 0, '', null, null, '', '', null),
-        (member1_uuid, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-         'sarah.chen@projecthub.com', crypt('ProjectHub2025!', gen_salt('bf', 10)), now(), now(), now(),
-         '{"full_name": "Sarah Chen", "role": "member"}'::jsonb, '{"provider": "email", "providers": ["email"]}'::jsonb,
-         false, false, '', null, '', null, '', '', null, '', 0, '', null, null, '', '', null),
-        (member2_uuid, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-         'mike.johnson@projecthub.com', crypt('ProjectHub2025!', gen_salt('bf', 10)), now(), now(), now(),
-         '{"full_name": "Mike Johnson", "role": "member"}'::jsonb, '{"provider": "email", "providers": ["email"]}'::jsonb,
-         false, false, '', null, '', null, '', '', null, '', 0, '', null, null, '', '', null);
-
-    -- Create sample projects
-    INSERT INTO public.projects (id, name, description, status, progress, owner_id, start_date, due_date) VALUES
-        (project1_uuid, 'E-commerce Platform Redesign', 'Complete UI/UX overhaul for mobile and desktop', 'on-track'::public.project_status, 75, admin_uuid, '2025-01-01', '2025-08-15'),
-        (project2_uuid, 'Mobile App Development', 'React Native app for iOS and Android', 'at-risk'::public.project_status, 45, manager_uuid, '2025-02-01', '2025-09-30'),
-        (project3_uuid, 'Data Analytics Dashboard', 'Real-time analytics and reporting system', 'on-track'::public.project_status, 90, admin_uuid, '2025-01-15', '2025-08-05');
-
-    -- Add project members
-    INSERT INTO public.project_members (project_id, user_id, role) VALUES
-        (project1_uuid, member1_uuid, 'member'::public.user_role),
-        (project1_uuid, member2_uuid, 'member'::public.user_role),
-        (project2_uuid, admin_uuid, 'member'::public.user_role),
-        (project2_uuid, member1_uuid, 'member'::public.user_role),
-        (project3_uuid, manager_uuid, 'manager'::public.user_role),
-        (project3_uuid, member2_uuid, 'member'::public.user_role);
-
-    -- Create sample tasks
-    INSERT INTO public.tasks (project_id, title, description, status, priority, assigned_to, created_by, due_date) VALUES
-        (project1_uuid, 'Design Homepage Mockups', 'Create wireframes and high-fidelity mockups for homepage', 'completed'::public.task_status, 'high'::public.task_priority, member1_uuid, admin_uuid, '2025-02-01'),
-        (project1_uuid, 'Implement Payment Flow', 'Integrate Stripe payment processing', 'in-progress'::public.task_status, 'high'::public.task_priority, member2_uuid, admin_uuid, '2025-02-15'),
-        (project2_uuid, 'Setup React Native Environment', 'Configure development environment and dependencies', 'completed'::public.task_status, 'medium'::public.task_priority, member1_uuid, manager_uuid, '2025-02-10'),
-        (project2_uuid, 'API Integration', 'Connect mobile app with backend services', 'todo'::public.task_status, 'high'::public.task_priority, member2_uuid, manager_uuid, '2025-03-01'),
-        (project3_uuid, 'Database Schema Design', 'Design optimal database structure for analytics', 'completed'::public.task_status, 'high'::public.task_priority, manager_uuid, admin_uuid, '2025-01-25'),
-        (project3_uuid, 'Chart Components Implementation', 'Build reusable chart components', 'in-progress'::public.task_status, 'medium'::public.task_priority, member2_uuid, admin_uuid, '2025-02-20');
-
-    -- Create sample activities
-    INSERT INTO public.activities (project_id, user_id, type, title, description) VALUES
-        (project1_uuid, member1_uuid, 'task'::public.activity_type, 'Task Completed', 'Completed user interface mockups for checkout flow'),
-        (project2_uuid, manager_uuid, 'meeting'::public.activity_type, 'Sprint Planning', 'Sprint planning meeting scheduled for tomorrow 10 AM'),
-        (project1_uuid, member1_uuid, 'message'::public.activity_type, 'Design Assets Shared', 'Shared latest design assets in project channel'),
-        (project2_uuid, member2_uuid, 'file'::public.activity_type, 'Document Upload', 'Uploaded technical specifications document'),
-        (project3_uuid, manager_uuid, 'integration'::public.activity_type, 'GitHub Connected', 'Connected GitHub repository for automated deployments');
-
-    -- Create sample integrations
-    INSERT INTO public.integrations (user_id, service_name, status, last_sync_at) VALUES
-        (admin_uuid, 'Google Workspace', 'connected'::public.integration_status, now() - interval '2 minutes'),
-        (admin_uuid, 'Microsoft Teams', 'connected'::public.integration_status, now() - interval '5 minutes'),
-        (admin_uuid, 'Slack', 'syncing'::public.integration_status, now() - interval '1 minute'),
-        (admin_uuid, 'Jira', 'connected'::public.integration_status, now() - interval '1 minute'),
-        (manager_uuid, 'GitHub', 'connected'::public.integration_status, now() - interval '3 minutes'),
-        (manager_uuid, 'Trello', 'error'::public.integration_status, now() - interval '1 hour'),
-        (member1_uuid, 'Notion', 'connected'::public.integration_status, now() - interval '4 minutes'),
-        (member2_uuid, 'Asana', 'disconnected'::public.integration_status, null);
-
-EXCEPTION
-    WHEN foreign_key_violation THEN
-        RAISE NOTICE 'Foreign key error: %', SQLERRM;
-    WHEN unique_violation THEN
-        RAISE NOTICE 'Unique constraint error: %', SQLERRM;
-    WHEN OTHERS THEN
-        RAISE NOTICE 'Unexpected error: %', SQLERRM;
-END $$;

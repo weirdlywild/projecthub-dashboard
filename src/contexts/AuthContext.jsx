@@ -104,25 +104,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Sign up function
-  const signUp = async (email, password, userData = {}) => {
-    try {
-      setAuthError(null);
-      const result = await authService.signUp(email, password, userData);
 
-      if (!result?.success) {
-        setAuthError(result?.error || "Signup failed");
-        return { success: false, error: result?.error };
-      }
-
-      return { success: true, data: result.data };
-    } catch (error) {
-      const errorMsg = "Something went wrong during signup. Please try again.";
-      setAuthError(errorMsg);
-      console.log("Sign up error:", error);
-      return { success: false, error: errorMsg };
-    }
-  };
 
   // Sign out function
   const signOut = async () => {
@@ -200,7 +182,6 @@ export function AuthProvider({ children }) {
     loading,
     authError,
     signIn,
-    signUp,
     signOut,
     updateProfile,
     resetPassword,

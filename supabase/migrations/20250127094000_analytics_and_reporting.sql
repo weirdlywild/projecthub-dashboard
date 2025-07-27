@@ -190,7 +190,7 @@ RETURNS NUMERIC
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
-AS $
+AS $$
 SELECT 
     CASE 
         WHEN COUNT(*) = 0 THEN 0
@@ -198,21 +198,21 @@ SELECT
     END
 FROM public.tasks 
 WHERE project_id = project_uuid
-$;
+$$;
 
 CREATE OR REPLACE FUNCTION public.get_user_task_count(user_uuid UUID, task_status_filter public.task_status DEFAULT NULL)
 RETURNS INTEGER
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
-AS $
+AS $$
 SELECT COUNT(*)::INTEGER
 FROM public.tasks t
 JOIN public.projects p ON t.project_id = p.id
 WHERE t.assigned_to = user_uuid 
   AND public.can_access_project(p.id)
   AND (task_status_filter IS NULL OR t.status = task_status_filter)
-$;
+$$;
 
 CREATE OR REPLACE FUNCTION public.log_user_activity(
     action_name TEXT,
@@ -223,7 +223,7 @@ CREATE OR REPLACE FUNCTION public.log_user_activity(
 RETURNS VOID
 LANGUAGE plpgsql
 SECURITY DEFINER
-AS $
+AS $$
 BEGIN
     INSERT INTO public.user_activity_logs (
         user_id, action, resource_type, resource_id, metadata
@@ -231,7 +231,7 @@ BEGIN
         auth.uid(), action_name, resource_type_param, resource_id_param, metadata_param
     );
 END;
-$;
+$$;
 
 -- 13. Update triggers for new tables
 CREATE TRIGGER update_reports_updated_at
@@ -282,57 +282,3 @@ LEFT JOIN public.project_members pm ON up.id = pm.user_id
 LEFT JOIN public.notifications n ON up.id = n.user_id
 WHERE up.id = auth.uid()
 GROUP BY up.id, up.full_name, up.email;
-
--- 15. Sample Analytics Data
-DO $
-DECLARE
-    project1_uuid UUID;
-    project2_uuid UUID;
-    project3_uuid UUID;
-    admin_uuid UUID;
-    manager_uuid UUID;
-    member1_uuid UUID;
-    member2_uuid UUID;
-BEGIN
-    -- Get existing project and user IDs
-    SELECT id INTO project1_uuid FROM public.projects WHERE name = 'E-commerce Platform Redesign' LIMIT 1;
-    SELECT id INTO project2_uuid FROM public.projects WHERE name = 'Mobile App Development' LIMIT 1;
-    SELECT id INTO project3_uuid FROM public.projects WHERE name = 'Data Analytics Dashboard' LIMIT 1;
-    
-    SELECT id INTO admin_uuid FROM public.user_profiles WHERE email = 'admin@projecthub.com' LIMIT 1;
-    SELECT id INTO manager_uuid FROM public.user_profiles WHERE email = 'manager@projecthub.com' LIMIT 1;
-    SELECT id INTO member1_uuid FROM public.user_profiles WHERE email = 'sarah.chen@projecthub.com' LIMIT 1;
-    SELECT id INTO member2_uuid FROM public.user_profiles WHERE email = 'mike.johnson@projecthub.com' LIMIT 1;
-
-    -- Insert sample project metrics
-    INSERT INTO public.project_metrics (project_id, metric_type, value, created_by) VALUES
-        (project1_uuid, 'task_completion', 75, admin_uuid),
-        (project1_uuid, 'user_activity', 45, admin_uuid),
-        (project2_uuid, 'task_completion', 45, manager_uuid),
-        (project2_uuid, 'performance', 82, manager_uuid),
-        (project3_uuid, 'task_completion', 90, admin_uuid),
-        (project3_uuid, 'integration_usage', 67, admin_uuid);
-
-    -- Insert sample notifications
-    INSERT INTO public.notifications (user_id, type, title, message) VALUES
-        (member1_uuid, 'task_assigned', 'New Task Assigned', 'You have been assigned to "Design Homepage Mockups"'),
-        (member2_uuid, 'deadline_reminder', 'Deadline Approaching', 'Task "API Integration" is due in 2 days'),
-        (admin_uuid, 'project_update', 'Project Status Update', 'E-commerce Platform Redesign is now 75% complete'),
-        (manager_uuid, 'integration_alert', 'Integration Issue', 'Trello integration needs attention');
-
-    -- Insert sample time entries
-    INSERT INTO public.time_entries (task_id, user_id, description, hours_spent, entry_date) VALUES
-        ((SELECT id FROM public.tasks WHERE title = 'Design Homepage Mockups' LIMIT 1), member1_uuid, 'Created wireframes and mockups', 6.5, CURRENT_DATE - 1),
-        ((SELECT id FROM public.tasks WHERE title = 'Implement Payment Flow' LIMIT 1), member2_uuid, 'Stripe integration setup', 4.0, CURRENT_DATE),
-        ((SELECT id FROM public.tasks WHERE title = 'Chart Components Implementation' LIMIT 1), member2_uuid, 'Built reusable chart components', 8.0, CURRENT_DATE - 2);
-
-    -- Insert sample project template
-    INSERT INTO public.project_templates (name, description, template_data, created_by, is_public) VALUES
-        ('Web Development Project', 'Standard template for web development projects', 
-         '{"tasks": [{"title": "Setup Development Environment", "priority": "high"}, {"title": "Design Database Schema", "priority": "medium"}, {"title": "Implement Authentication", "priority": "high"}], "phases": ["Planning", "Development", "Testing", "Deployment"]}'::jsonb, 
-         admin_uuid, true);
-
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE NOTICE 'Error inserting sample analytics data: %', SQLERRM;
-END $;

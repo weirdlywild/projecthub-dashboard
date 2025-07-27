@@ -42,11 +42,22 @@ npm install
 cp .env.local.example .env.local
 # Edit .env.local with your Supabase credentials
 
+# Apply database migrations
+supabase db push
+
+# Create admin user (optional)
+supabase db reset --db-url "your-supabase-db-url" --file supabase/seed.sql
+
 # Start development server
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Default Admin Account
+After running the admin seed script, you can login with:
+- **Email**: `admin@projecthub.com`
+- **Password**: `Admin123!`
 
 ## 📁 Project Structure
 
@@ -78,12 +89,29 @@ See [Authentication Guide](./docs/AUTHENTICATION.md) for complete implementation
 
 ## 🗄️ Database
 
-The application uses Supabase with a comprehensive schema including:
+The application uses Supabase with a comprehensive schema across two migration files:
 
-- **Project Management** - Projects, tasks, team members, and dependencies
-- **Analytics & Reporting** - Real-time metrics, custom reports, and dashboards
-- **User Activity** - Activity logs, notifications, and time tracking
-- **Row Level Security** - Secure data access with comprehensive RLS policies
+### Core Schema (`20250127093500_project_management_with_auth.sql`)
+- **User Management** - Profiles, roles, and authentication integration
+- **Project Management** - Projects, tasks, team members, and activities
+- **Integrations** - Third-party service connections and status tracking
+- **Row Level Security** - Comprehensive RLS policies for secure data access
+
+### Analytics Enhancement (`20250127094000_analytics_and_reporting.sql`)
+- **Advanced Analytics** - Project metrics, completion rates, and performance tracking
+- **Reporting System** - Custom reports with flexible configuration
+- **Notifications** - Real-time alerts and activity notifications
+- **Time Tracking** - Task-based time logging and project hour tracking
+- **Project Templates** - Reusable project structures for quick setup
+- **Task Dependencies** - Complex task relationship management
+
+### Admin User Setup (`create_admin.js`, `seed.sql` & `seed_admin.sql`)
+- **JavaScript Script** - `create_admin.js` provides a modern Node.js approach using Supabase Auth API
+- **SQL Scripts** - `seed.sql` and `seed_admin.sql` offer database-level admin user creation
+- **System Administrator** - Creates a default admin user for initial system access
+- **Role Management** - Automatically assigns admin privileges with full system access
+- **Safe Execution** - Handles duplicate user creation gracefully with proper error handling
+- **Profile Integration** - Creates corresponding user profile via database triggers
 
 See [Database Schema](./docs/DATABASE.md) for complete table structures and usage examples.
 
@@ -106,6 +134,26 @@ npm run dev        # Start development server
 npm run build      # Build for production  
 npm run start      # Start production server
 npm run lint       # Run ESLint
+```
+
+### Database Management
+
+```bash
+# Apply migrations
+supabase db push
+
+# Reset database with migrations
+supabase db reset
+
+# Create admin user (multiple options)
+# Option 1: Using JavaScript script (recommended)
+node create_admin.js
+
+# Option 2: Using SQL seed file
+supabase db reset --db-url "your-supabase-db-url" --file supabase/seed.sql
+
+# View database locally
+supabase start
 ```
 
 ## 🚀 Deployment

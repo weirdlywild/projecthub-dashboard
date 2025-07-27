@@ -5,7 +5,6 @@ import LoginHeader from './components/LoginHeader';
 import LoginForm from './components/LoginForm';
 import OAuthIntegrations from './components/OAuthIntegrations';
 import SecurityBadges from './components/SecurityBadges';
-import SignUpPrompt from './components/SignUpPrompt';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -54,11 +53,6 @@ const LoginPage = () => {
           {/* OAuth Integrations */}
           <div className="mt-6">
             <OAuthIntegrations />
-          </div>
-
-          {/* Sign Up Prompt */}
-          <div className="mt-6">
-            <SignUpPrompt />
           </div>
 
           {/* Security Badges */}
