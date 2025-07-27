@@ -1,6 +1,6 @@
 import React from 'react';
 import { Slot } from "@radix-ui/react-slot";
-import { cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../utils/cn";
 import Icon from '../AppIcon';
 
@@ -35,16 +35,27 @@ const buttonVariants = cva(
     }
 );
 
-const Button = React.forwardRef(({
+export interface ButtonProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+        VariantProps<typeof buttonVariants> {
+    asChild?: boolean;
+    loading?: boolean;
+    iconName?: string;
+    iconPosition?: 'left' | 'right';
+    iconSize?: number;
+    fullWidth?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
     className,
     variant,
     size,
     asChild = false,
     children,
     loading = false,
-    iconName = null,
+    iconName,
     iconPosition = 'left',
-    iconSize = null,
+    iconSize,
     fullWidth = false,
     disabled = false,
     ...props
@@ -61,7 +72,7 @@ const Button = React.forwardRef(({
         icon: 16,
     };
 
-    const calculatedIconSize = iconSize || iconSizeMap[size] || 16;
+    const calculatedIconSize = iconSize || iconSizeMap[size || 'default'] || 16;
 
     // Loading spinner
     const LoadingSpinner = () => (

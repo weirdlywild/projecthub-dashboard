@@ -1,11 +1,17 @@
 import React from 'react';
 
+interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  src: string;
+  alt?: string;
+  className?: string;
+}
+
 function Image({
   src,
   alt = "Image Name",
   className = "",
   ...props
-}) {
+}: ImageProps) {
 
   return (
     <img
@@ -13,7 +19,7 @@ function Image({
       alt={alt}
       className={className}
       onError={(e) => {
-        e.target.src = "/assets/images/no_image.png"
+        (e.target as HTMLImageElement).src = "/assets/images/no_image.png"
       }}
       {...props}
     />

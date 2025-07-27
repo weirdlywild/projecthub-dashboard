@@ -2,8 +2,34 @@ import React from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 
-const ProjectCard = ({ project, onViewDetails }) => {
-  const getStatusColor = (status) => {
+interface TeamMember {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+interface Alert {
+  id: string;
+  message: string;
+}
+
+interface ProjectCardProps {
+  project: {
+    id: string;
+    name: string;
+    description: string;
+    status: string;
+    progress: number;
+    dueDate: string;
+    teamSize: number;
+    teamMembers: TeamMember[];
+    alerts?: Alert[];
+  };
+  onViewDetails: (project: any) => void;
+}
+
+const ProjectCard = ({ project, onViewDetails }: ProjectCardProps) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'on-track':
         return 'text-success bg-success/10';
@@ -16,7 +42,7 @@ const ProjectCard = ({ project, onViewDetails }) => {
     }
   };
 
-  const getProgressColor = (progress) => {
+  const getProgressColor = (progress: number) => {
     if (progress >= 80) return 'bg-success';
     if (progress >= 60) return 'bg-primary';
     if (progress >= 40) return 'bg-warning';
@@ -61,7 +87,7 @@ const ProjectCard = ({ project, onViewDetails }) => {
 
       <div className="flex items-center justify-between">
         <div className="flex -space-x-2">
-          {project.teamMembers.slice(0, 4).map((member, index) => (
+          {project.teamMembers && project.teamMembers.slice(0, 4).map((member, index) => (
             <div key={member.id} className="relative">
               <Image
                 src={member.avatar}
@@ -70,7 +96,7 @@ const ProjectCard = ({ project, onViewDetails }) => {
               />
             </div>
           ))}
-          {project.teamMembers.length > 4 && (
+          {project.teamMembers && project.teamMembers.length > 4 && (
             <div className="w-8 h-8 rounded-full bg-muted border-2 border-card flex items-center justify-center">
               <span className="text-xs font-medium text-muted-foreground">
                 +{project.teamMembers.length - 4}

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import authService from "../utils/authService";
+import { isSupabaseConfigured } from "../utils/supabaseClient";
 import type { AuthContextType, User, UserProfile, AuthEvent, AuthSession } from "../types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,7 +22,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
             try {
                 setLoading(true);
 
-                const sessionResult = await authService.getSession();
+                // If Supabase is not configured, use mock user for development
+                if (!isSupabaseConfigured) {
+                    console.log("Supabase not configured, using mock user for development");
+                    if (isMounted) {
+                        const mockUser: User = {
+                            id: 'mock-user-id',
+                            email: 'demo@example.com',
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        };
+                        
+                        const mockProfile: UserProfile = {
+                            id: 'mock-user-id',
+                            full_name: 'Demo User',
+                            email: 'demo@example.com',
+                            role: 'admin',
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        };
+
+                        setUser(mockUser);
+                        setUserProfile(mockProfile);
+                    }
+                    return;
+                }
+
+                // Add timeout to prevent infinite loading
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Auth initialization timeout')), 5000);
+                });
+
+                const sessionPromise = authService.getSession();
+                const sessionResult = await Promise.race([sessionPromise, timeoutPromise]) as any;
 
                 if (
                     sessionResult?.success &&
@@ -31,15 +64,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     const authUser = sessionResult.data.session.user;
                     setUser(authUser);
 
-                    // Fetch user profile
-                    const profileResult = await authService.getUserProfile(authUser.id);
+                    // Fetch user profile with timeout
+                    try {
+                        const profilePromise = authService.getUserProfile(authUser.id);
+                        const profileResult = await Promise.race([profilePromise, timeoutPromise]) as any;
 
-                    if (profileResult?.success && profileResult.data && isMounted) {
-                        setUserProfile(profileResult.data);
+                        if (profileResult?.success && profileResult.data && isMounted) {
+                            setUserProfile(profileResult.data);
+                        }
+                    } catch (profileError) {
+                        console.log("Profile fetch error:", profileError);
+                        // Continue without profile
+                    }
+                } else {
+                    // No session found, ensure user is null
+                    if (isMounted) {
+                        setUser(null);
+                        setUserProfile(null);
                     }
                 }
             } catch (error) {
                 console.log("Auth initialization error:", error);
+                // On error, ensure user is null
+                if (isMounted) {
+                    setUser(null);
+                    setUserProfile(null);
+                }
             } finally {
                 if (isMounted) {
                     setLoading(false);
