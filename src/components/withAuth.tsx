@@ -1,8 +1,9 @@
+import React, { ComponentType } from 'react';
 import AuthGuard from './AuthGuard';
 import ErrorBoundary from './ErrorBoundary';
 
-const withAuth = (WrappedComponent) => {
-  const AuthenticatedComponent = (props) => {
+const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
+  const AuthenticatedComponent = (props: P) => {
     return (
       <ErrorBoundary>
         <AuthGuard>

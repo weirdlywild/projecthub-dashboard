@@ -93,6 +93,18 @@ src/styles/
 - `tailwind.css` contains CSS custom properties for design system
 - Import order: `tailwind.css` then `index.css` in `_app.js`
 
+### Types (`src/types/`)
+```
+src/types/
+└── index.ts              # Comprehensive TypeScript type definitions
+```
+
+**Patterns**:
+- **Centralized types** in `index.ts` for all application interfaces
+- **Domain-specific types** for User, Project, Task, Integration entities
+- **Component prop types** for consistent UI component interfaces
+- **API response types** for type-safe service layer interactions
+
 ### Utils (`src/utils/`)
 ```
 src/utils/
@@ -203,13 +215,15 @@ export default function NewFeature() {
 
 ## File Naming Conventions
 - **Pages**: `kebab-case.js` in `pages/`, `index.jsx` in `src/pages/`
-- **Components**: `PascalCase.jsx`
-- **Services**: `camelCaseService.js`
-- **Utilities**: `camelCase.js`
+- **Components**: `PascalCase.jsx` or `PascalCase.tsx` for TypeScript
+- **Services**: `camelCaseService.js` or `camelCaseService.ts` for TypeScript
+- **Utilities**: `camelCase.js` or `camelCase.ts` for TypeScript
+- **Types**: `camelCase.ts` for TypeScript definitions
 - **Styles**: `kebab-case.css`
 
 ## Import Patterns
 - Use relative imports for local files
-- Absolute imports configured via `jsconfig.json`
+- Absolute imports configured via `tsconfig.json` with path mapping
 - Import order: external libraries, then internal modules
 - Use `cn()` utility from `src/utils/cn.js` for conditional classes
+- TypeScript imports: `import type { TypeName } from '@/types'` for type-only imports

@@ -7,9 +7,11 @@ A modern React-based project management dashboard that provides comprehensive pr
 Complete documentation is available in the [`docs/`](./docs/) folder:
 
 - **[Project Overview](./docs/PROJECT_OVERVIEW.md)** - Features, setup, and quick start guide
+- **[Development Guide](./docs/DEVELOPMENT.md)** - Development environment setup and best practices
 - **[Authentication Guide](./docs/AUTHENTICATION.md)** - Complete authentication system documentation
 - **[Database Schema](./docs/DATABASE.md)** - Supabase database structure and migrations
 - **[Architecture](./docs/ARCHITECTURE.md)** - Project structure and architectural patterns
+- **[TypeScript Guide](./docs/TYPESCRIPT.md)** - TypeScript integration and type definitions
 
 For a quick start, see the [Project Overview](./docs/PROJECT_OVERVIEW.md).
 

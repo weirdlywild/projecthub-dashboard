@@ -29,7 +29,8 @@ A modern React-based project management dashboard that provides comprehensive pr
 ### Frontend Framework
 - **Next.js 14** - React framework with SSR, SSG, and file-based routing
 - **React 18** - Modern React with concurrent features and improved rendering
-- **JavaScript (JSX)** - No TypeScript, uses JSX for component development
+- **TypeScript** - Full TypeScript support with comprehensive type definitions
+- **JavaScript (JSX)** - Gradual migration from JavaScript to TypeScript
 
 ### State Management & Routing
 - **Redux Toolkit** - Simplified Redux for global state management
@@ -52,10 +53,12 @@ A modern React-based project management dashboard that provides comprehensive pr
 - **Axios** - HTTP client for API requests
 
 ### Development Tools
+- **TypeScript 5.0** - Static type checking with comprehensive type definitions
 - **React Hook Form** - Efficient form handling and validation
 - **date-fns** - Date manipulation utilities
 - **clsx + tailwind-merge** - Conditional className utility (`cn` function)
 - **ESLint** - Code linting with Next.js configuration
+- **VS Code Configuration** - Optimized development environment with TypeScript settings
 
 ## 📋 Prerequisites
 

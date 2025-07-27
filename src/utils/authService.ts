@@ -1,8 +1,14 @@
 import { supabase } from './supabaseClient';
+import type { ApiResponse, UserProfile } from '../types';
+
+interface SignUpData {
+  fullName?: string;
+  role?: string;
+}
 
 const authService = {
   // Sign in with email and password
-  async signIn(email, password) {
+  async signIn(email: string, password: string): Promise<ApiResponse> {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -14,7 +20,7 @@ const authService = {
       }
 
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       if (error?.message?.includes('Failed to fetch') || 
           error?.message?.includes('AuthRetryableFetchError')) {
         return { 
@@ -27,7 +33,7 @@ const authService = {
   },
 
   // Sign up with email and password
-  async signUp(email, password, userData = {}) {
+  async signUp(email: string, password: string, userData: SignUpData = {}): Promise<ApiResponse> {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -45,7 +51,7 @@ const authService = {
       }
 
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       if (error?.message?.includes('Failed to fetch') || 
           error?.message?.includes('AuthRetryableFetchError')) {
         return { 
@@ -58,7 +64,7 @@ const authService = {
   },
 
   // Sign out
-  async signOut() {
+  async signOut(): Promise<ApiResponse> {
     try {
       const { error } = await supabase.auth.signOut();
       
@@ -73,7 +79,7 @@ const authService = {
   },
 
   // Get current session
-  async getSession() {
+  async getSession(): Promise<ApiResponse> {
     try {
       const { data, error } = await supabase.auth.getSession();
       
@@ -88,7 +94,7 @@ const authService = {
   },
 
   // Get user profile
-  async getUserProfile(userId) {
+  async getUserProfile(userId: string): Promise<ApiResponse<UserProfile>> {
     try {
       const { data, error } = await supabase
         .from('user_profiles')
@@ -101,7 +107,7 @@ const authService = {
       }
 
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       if (error?.message?.includes('Failed to fetch') || 
           error?.message?.includes('NetworkError') ||
           error?.name === 'TypeError' && error?.message?.includes('fetch')) {
@@ -115,7 +121,7 @@ const authService = {
   },
 
   // Update user profile
-  async updateUserProfile(userId, updates) {
+  async updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
     try {
       const { data, error } = await supabase
         .from('user_profiles')
@@ -129,7 +135,7 @@ const authService = {
       }
 
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       if (error?.message?.includes('Failed to fetch') || 
           error?.message?.includes('NetworkError') ||
           error?.name === 'TypeError' && error?.message?.includes('fetch')) {
@@ -143,7 +149,7 @@ const authService = {
   },
 
   // Reset password
-  async resetPassword(email) {
+  async resetPassword(email: string): Promise<ApiResponse> {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`
@@ -160,7 +166,7 @@ const authService = {
   },
 
   // Auth state change listener
-  onAuthStateChange(callback) {
+  onAuthStateChange(callback: (event: any, session: any) => void) {
     return supabase.auth.onAuthStateChange(callback);
   }
 };

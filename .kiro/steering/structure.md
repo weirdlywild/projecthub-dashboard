@@ -17,16 +17,16 @@ Next.js file-based routing - each file becomes a route:
 
 ```
 pages/
-├── _app.js               # App wrapper with providers (Redux, Auth)
-├── _document.js          # HTML document structure
-├── index.js              # Home page (routes to dashboard-overview)
-├── login.js              # Authentication page
-├── dashboard-overview.js # Main dashboard
-├── analytics-reports.js  # Data visualization
-├── search-discovery.js   # Search functionality
-├── integrations-hub.js   # Third-party integrations
-├── project-dashboard.js  # Individual project management
-└── 404.js                # Custom 404 page
+├── _app.tsx              # App wrapper with providers (Redux, Auth)
+├── _document.tsx         # HTML document structure
+├── index.tsx             # Home page (routes to dashboard-overview)
+├── login.tsx             # Authentication page
+├── dashboard-overview.tsx # Main dashboard
+├── analytics-reports.tsx  # Data visualization
+├── search-discovery.tsx   # Search functionality
+├── integrations-hub.tsx   # Third-party integrations
+├── project-dashboard.tsx  # Individual project management
+└── 404.tsx               # Custom 404 page
 ```
 
 **Pattern**: Each Next.js page imports and wraps a component from `src/pages/` with `ErrorBoundary`.
@@ -37,16 +37,16 @@ pages/
 ```
 src/components/
 ├── ui/                   # Base UI components (buttons, inputs, etc.)
-├── AppIcon.jsx           # Icon component wrapper
-├── AppImage.jsx          # Image component wrapper
-├── ErrorBoundary.jsx     # Error boundary wrapper
-└── ScrollToTop.jsx       # Scroll utility component
+├── AppIcon.tsx           # Icon component wrapper
+├── AppImage.tsx          # Image component wrapper
+├── ErrorBoundary.tsx     # Error boundary wrapper
+└── ScrollToTop.tsx       # Scroll utility component
 ```
 
 **Patterns**:
 - **Base components** in `ui/` for reusable UI elements
 - **Feature components** in root for app-specific functionality
-- Use `.jsx` extension for components
+- Use `.tsx` extension for components
 
 ### Pages (`src/pages/`)
 ```
@@ -57,18 +57,18 @@ src/pages/
 ├── login/                # Login page components
 ├── project-dashboard/    # Project page components
 ├── search-discovery/     # Search page components
-└── NotFound.jsx          # 404 page component
+└── NotFound.tsx          # 404 page component
 ```
 
 **Patterns**:
-- Each page has its own folder containing `index.jsx` as main component
+- Each page has its own folder containing `index.tsx` as main component
 - Related components, hooks, or utilities can be co-located in page folders
 - Page components are imported by corresponding Next.js pages
 
 ### Contexts (`src/contexts/`)
 ```
 src/contexts/
-└── AuthContext.jsx       # Authentication context provider
+└── AuthContext.tsx       # Authentication context provider
 ```
 
 **Pattern**: React Context for local state management (authentication, theme, etc.)
@@ -76,7 +76,7 @@ src/contexts/
 ### Store (`src/store/`)
 ```
 src/store/
-└── store.js              # Redux Toolkit store configuration
+└── store.ts              # Redux Toolkit store configuration
 ```
 
 **Pattern**: Centralized Redux store for global state management
@@ -90,23 +90,35 @@ src/styles/
 
 **Patterns**:
 - `tailwind.css` contains CSS custom properties for design system
-- Import order: `tailwind.css` then `index.css` in `_app.js`
+- Import order: `tailwind.css` then `index.css` in `_app.tsx`
+
+### Types (`src/types/`)
+```
+src/types/
+└── index.ts              # Comprehensive TypeScript type definitions
+```
+
+**Patterns**:
+- **Centralized types** in `index.ts` for all application interfaces
+- **Domain-specific types** for User, Project, Task, Integration entities
+- **Component prop types** for consistent UI component interfaces
+- **API response types** for type-safe service layer interactions
 
 ### Utils (`src/utils/`)
 ```
 src/utils/
-├── authService.js        # Authentication utilities
-├── cn.js                 # Tailwind class merging utility
-├── integrationService.js # Integration API calls
-├── projectService.js     # Project API calls
-├── supabaseClient.js     # Supabase client configuration
-└── taskService.js        # Task management utilities
+├── authService.ts        # Authentication utilities
+├── cn.ts                 # Tailwind class merging utility
+├── integrationService.ts # Integration API calls
+├── projectService.ts     # Project API calls
+├── supabaseClient.ts     # Supabase client configuration
+└── taskService.ts        # Task management utilities
 ```
 
 **Patterns**:
-- **API services** follow pattern `[feature]Service.js`
-- **Supabase client** centralized in `supabaseClient.js`
-- **Utility functions** like `cn.js` for common operations
+- **API services** follow pattern `[feature]Service.ts`
+- **Supabase client** centralized in `supabaseClient.ts`
+- **Utility functions** like `cn.ts` for common operations
 
 ## Public Directory (`public/`)
 ```
@@ -122,7 +134,7 @@ public/
 ### Page Structure
 1. Next.js page in `pages/` directory
 2. Wraps component from `src/pages/` with `ErrorBoundary`
-3. Page component in `src/pages/[feature]/index.jsx`
+3. Page component in `src/pages/[feature]/index.tsx`
 
 ### Component Organization
 - **Base components**: `src/components/ui/` for reusable UI
@@ -135,15 +147,15 @@ public/
 - **Local state**: React hooks (`useState`, `useReducer`) for component state
 
 ### Service Layer
-- **API services** in `src/utils/` following `[feature]Service.js` pattern
-- **Supabase client** centralized in `src/utils/supabaseClient.js`
+- **API services** in `src/utils/` following `[feature]Service.ts` pattern
+- **Supabase client** centralized in `src/utils/supabaseClient.ts`
 - **Utility functions** for common operations
 
 ## Adding New Routes
 
 ### 1. Create Page Component
-```jsx
-// src/pages/new-feature/index.jsx
+```tsx
+// src/pages/new-feature/index.tsx
 const NewFeaturePage = () => {
   return (
     <div className="container mx-auto p-6">
@@ -156,8 +168,8 @@ export default NewFeaturePage;
 ```
 
 ### 2. Create Next.js Page
-```jsx
-// pages/new-feature.js
+```tsx
+// pages/new-feature.tsx
 import NewFeaturePage from '../src/pages/new-feature';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 
@@ -171,14 +183,16 @@ export default function NewFeature() {
 ```
 
 ## File Naming Conventions
-- **Pages**: `kebab-case.js` in `pages/`, `index.jsx` in `src/pages/`
-- **Components**: `PascalCase.jsx`
-- **Services**: `camelCaseService.js`
-- **Utilities**: `camelCase.js`
+- **Pages**: `kebab-case.tsx` in `pages/`, `index.tsx` in `src/pages/`
+- **Components**: `PascalCase.tsx` for TypeScript components
+- **Services**: `camelCaseService.ts` for TypeScript services
+- **Utilities**: `camelCase.ts` for TypeScript utilities
+- **Types**: `camelCase.ts` for TypeScript definitions
 - **Styles**: `kebab-case.css`
 
 ## Import Patterns
 - Use relative imports for local files
-- Absolute imports configured via `jsconfig.json`
+- Absolute imports configured via `tsconfig.json` with path mapping
 - Import order: external libraries, then internal modules
-- Use `cn()` utility from `src/utils/cn.js` for conditional classes
+- Use `cn()` utility from `src/utils/cn.ts` for conditional classes
+- TypeScript imports: `import type { TypeName } from '@/types'` for type-only imports

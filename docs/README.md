@@ -10,7 +10,9 @@ Welcome to the ProjectHub Dashboard documentation. This folder contains comprehe
 - **[Database Schema](./DATABASE.md)** - Supabase database structure and migrations
 
 ### Development Guides
+- **[Development Guide](./DEVELOPMENT.md)** - Development environment setup and best practices
 - **[Architecture](./ARCHITECTURE.md)** - Project structure and architectural patterns
+- **[TypeScript Guide](./TYPESCRIPT.md)** - TypeScript integration and type definitions
 - **[API Reference](./API.md)** - Service layer and API documentation
 - **[Styling Guide](./STYLING.md)** - Design system and Tailwind CSS configuration
 
