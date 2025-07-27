@@ -1,10 +1,4 @@
 import DashboardOverview from '../src/pages/dashboard-overview';
-import ErrorBoundary from '../src/components/ErrorBoundary';
+import withAuth from '../src/components/withAuth';
 
-export default function DashboardOverviewPage() {
-  return (
-    <ErrorBoundary>
-      <DashboardOverview />
-    </ErrorBoundary>
-  );
-}
+export default withAuth(DashboardOverview);

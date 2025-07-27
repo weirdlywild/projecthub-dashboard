@@ -1,10 +1,4 @@
 import ProjectDashboard from '../src/pages/project-dashboard';
-import ErrorBoundary from '../src/components/ErrorBoundary';
+import withAuth from '../src/components/withAuth';
 
-export default function ProjectDashboardPage() {
-  return (
-    <ErrorBoundary>
-      <ProjectDashboard />
-    </ErrorBoundary>
-  );
-}
+export default withAuth(ProjectDashboard);

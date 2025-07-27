@@ -1,10 +1,4 @@
 import AnalyticsReports from '../src/pages/analytics-reports';
-import ErrorBoundary from '../src/components/ErrorBoundary';
+import withAuth from '../src/components/withAuth';
 
-export default function AnalyticsReportsPage() {
-  return (
-    <ErrorBoundary>
-      <AnalyticsReports />
-    </ErrorBoundary>
-  );
-}
+export default withAuth(AnalyticsReports);

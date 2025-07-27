@@ -1,10 +1,4 @@
 import SearchDiscovery from '../src/pages/search-discovery';
-import ErrorBoundary from '../src/components/ErrorBoundary';
+import withAuth from '../src/components/withAuth';
 
-export default function SearchDiscoveryPage() {
-  return (
-    <ErrorBoundary>
-      <SearchDiscovery />
-    </ErrorBoundary>
-  );
-}
+export default withAuth(SearchDiscovery);
