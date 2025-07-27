@@ -1,9 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
-import { isProtectedRoute, isPublicRoute } from '../utils/navigationService';
+import { isProtectedRoute } from '../utils/navigationService';
 
-const AuthMiddleware = ({ children }) => {
+interface AuthMiddlewareProps {
+  children: ReactNode;
+}
+
+const AuthMiddleware = ({ children }: AuthMiddlewareProps) => {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -42,7 +46,7 @@ const AuthMiddleware = ({ children }) => {
     );
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default AuthMiddleware;

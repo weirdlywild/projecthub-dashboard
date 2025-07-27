@@ -1,8 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 
-const AuthGuard = ({ children }) => {
+interface AuthGuardProps {
+  children: ReactNode;
+}
+
+const AuthGuard = ({ children }: AuthGuardProps) => {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -31,7 +35,7 @@ const AuthGuard = ({ children }) => {
   }
 
   // User is authenticated, render children
-  return children;
+  return <>{children}</>;
 };
 
 export default AuthGuard;

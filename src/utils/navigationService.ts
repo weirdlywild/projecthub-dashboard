@@ -6,7 +6,7 @@ export const useAuthNavigation = () => {
   const router = useRouter();
   const { signOut } = useAuth();
 
-  const navigateTo = (path) => {
+  const navigateTo = (path: string) => {
     router.push(path);
   };
 
@@ -55,11 +55,11 @@ export const PUBLIC_ROUTES = [
 ];
 
 // Check if a route is protected
-export const isProtectedRoute = (path) => {
+export const isProtectedRoute = (path: string): boolean => {
   return PROTECTED_ROUTES.includes(path);
 };
 
 // Check if a route is public
-export const isPublicRoute = (path) => {
+export const isPublicRoute = (path: string): boolean => {
   return PUBLIC_ROUTES.includes(path);
 };
